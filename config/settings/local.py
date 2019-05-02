@@ -13,6 +13,19 @@ ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
 ]
+# DATABASE
+# ------------------------------------------------------------------------------
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'iotd',
+        'USER': env.str('USER'),
+        'PASSWORD': env.str('PASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # CACHES
 # ------------------------------------------------------------------------------

@@ -285,3 +285,8 @@ jazmin_leon_llc/media/
 .pytest_cache/
 
 
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
