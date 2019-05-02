@@ -12,7 +12,7 @@ env = environ.Env()
 READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=True)
 if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
-    env.read_env(str(ROOT_DIR.path('.envs/local.env')))
+    env.read_env(str(ROOT_DIR.path('.env')))
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -28,9 +28,9 @@ LANGUAGE_CODE = 'en-us'
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
-USE_I18N = True
+USE_I18N = False
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
-USE_L10N = True
+USE_L10N = False
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
 
@@ -52,7 +52,7 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'django.contrib.humanize', # Handy template tags
-    'django.contrib.admin',
+    'django.contrib.sitemaps',
 ]
 
 THIRD_PARTY_APPS = [
@@ -61,6 +61,62 @@ THIRD_PARTY_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',
+    'staff_toolbar',
+    
+    # Fluent cms
+    'fluent_contents',
+    'fluent_dashboard',
+
+    'admin_tools',
+    'admin_tools.theming',
+    'admin_tools.menu',
+    'admin_tools.dashboard',
+    'django.contrib.admin',
+
+    'fluent_contents.plugins.code',
+    'fluent_contents.plugins.commentsarea',
+    'fluent_contents.plugins.disquswidgets',
+    'fluent_contents.plugins.gist',
+    'fluent_contents.plugins.googledocsviewer',
+    'fluent_contents.plugins.iframe',
+    'fluent_contents.plugins.markup',
+    'fluent_contents.plugins.rawhtml',
+    'fluent_contents.plugins.text',
+
+    # Fluent pages
+    'fluent_pages',
+    'fluent_pages.pagetypes.flatpage',
+    'fluent_pages.pagetypes.fluentpage',
+    'fluent_pages.pagetypes.redirectnode',
+    'fluent_blogs',
+
+    'threadedcomments',
+    'fluent_comments',      # Before django_comments
+    'django_comments',
+    'fluentcms_emailtemplates',
+    'fluentcms_emailtemplates.plugins.emailtext',
+    'fluentcms_contactform',
+    # Some plugins need extra Django applications
+    'categories',
+    'categories.editor',
+    'guardian',
+    'any_imagefield',
+    'any_urlfield',
+    'easy_thumbnails',
+    'filer',
+    'mptt',
+    'parler',
+    'polymorphic',
+    'polymorphic_tree',
+    'disqus',
+    'django_wysiwyg',
+    'ckeditor',
+    'crispy_forms',
+    'crispy_forms_foundation',
+    # tags
+    'taggit',
+    'taggit_autosuggest',
+    'taggit_selectize',
 ]
 LOCAL_APPS = [
     'jazmin_leon_llc.users.apps.UsersAppConfig',
@@ -82,7 +138,10 @@ MIGRATION_MODULES = {
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
 ]
+
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = 'users.User'
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
@@ -126,9 +185,66 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'fluent_contents.middleware.HttpRedirectRequestMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Thumbnail
+# ------------------------------------------------------------------------------
+THUMBNAIL_HIGH_RESOLUTION = True
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    #'easy_thumbnails.processors.scale_and_crop',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+    'easy_thumbnails.processors.filters',
+)
+
+# Filer
+# ------------------------------------------------------------------------------
+#https://django-filer.readthedocs.io/en/latest/settings.html#filer-storages
+FILER_ENABLE_PERMISSIONS = True
+FILER_IS_PUBLIC_DEFAULT = False
+FILER_STORAGES = {
+    'public': {
+        'main': {
+            'ENGINE': 'filer.storage.PublicFileSystemStorage',
+            'OPTIONS': {
+                'location': '/path/to/media/filer',
+                'base_url': '/media/filer/',
+            },
+            'UPLOAD_TO': 'filer.utils.generate_filename.randomized',
+            'UPLOAD_TO_PREFIX': 'filer_public',
+        },
+        'thumbnails': {
+            'ENGINE': 'filer.storage.PublicFileSystemStorage',
+            'OPTIONS': {
+                'location': '/path/to/media/filer_thumbnails',
+                'base_url': '/media/filer_thumbnails/',
+            },
+        },
+    },
+    'private': {
+        'main': {
+            'ENGINE': 'filer.storage.PrivateFileSystemStorage',
+            'OPTIONS': {
+                'location': '/path/to/smedia/filer',
+                'base_url': '/smedia/filer/',
+            },
+            'UPLOAD_TO': 'filer.utils.generate_filename.randomized',
+            'UPLOAD_TO_PREFIX': 'filer_public',
+        },
+        'thumbnails': {
+            'ENGINE': 'filer.storage.PrivateFileSystemStorage',
+            'OPTIONS': {
+                'location': '/path/to/smedia/filer_thumbnails',
+                'base_url': '/smedia/filer_thumbnails/',
+            },
+        },
+    },
+}
+
 
 # STATIC
 # ------------------------------------------------------------------------------
@@ -145,6 +261,29 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
+
+# Fluent CMS Settings
+# ------------------------------------------------------------------------------
+# https://github.com/django-fluent/django-fluent.org
+DJANGO_WYSIWYG_FLAVOR = "ckeditor"
+FLUENT_MARKUP_LANGUAGE = 'reStructuredText'        # can also be markdown or textile
+FLUENT_PAGES_DEFAULT_IN_NAVIGATION = False
+FLUENT_PAGES_PARENT_ADMIN_MIXIN = None
+FLUENT_PAGES_CHILD_ADMIN_MIXIN = None
+ROBOTS_TXT_DISALLOW_ALL = DEBUG
+ADMIN_TOOLS_INDEX_DASHBOARD = 'fluent_dashboard.dashboard.FluentIndexDashboard'
+ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'fluent_dashboard.dashboard.FluentAppIndexDashboard'
+ADMIN_TOOLS_MENU = 'fluent_dashboard.menu.FluentMenu'
+FLUENTCMS_EMAILTEMPLATES_PLUGINS = (
+    'EmailTextPlugin',
+)
+COMMENTS_APP = 'threadedcomments'
+FLUENT_BLOG_CATEGORY_MODEL = 'categories'
+
+# TAGGIT STUFF
+# ------------------------------------------------------------------------------
+TAGGIT_TAGS_FROM_STRING = 'taggit_selectize.utils.parse_tags'
+TAGGIT_STRING_FROM_TAGS = 'taggit_selectize.utils.join_tags'
 
 # MEDIA
 # ------------------------------------------------------------------------------
@@ -172,13 +311,13 @@ TEMPLATES = [
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
+                'admin_tools.template_loaders.Loader',
             ],
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
@@ -209,7 +348,7 @@ X_FRAME_OPTIONS = 'DENY'
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # ADMIN
 # ------------------------------------------------------------------------------
@@ -244,6 +383,7 @@ INSTALLED_APPS += ["compressor", ]
 STATICFILES_FINDERS += ["compressor.finders.CompressorFinder", ]
 
 # django-libsass
+# ------------------------------------------------------------------------------
 COMPRESS_PRECOMPILERS = [
     ('text/x-scss', 'django_libsass.SassCompiler'),
 ]

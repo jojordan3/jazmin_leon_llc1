@@ -14,11 +14,22 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
     <![endif]-->
 
+    {# <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicons/apple-touch-icon.png' %}"> #}
+    {# <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicons/favicon-32x32.png' %}"> #}
+    {# <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicons/favicon-16x16.png' %}"> #}
+    {# <link rel="manifest" href="{% static 'images/favicons/site.webmanifest' %}"> #}
+    {# <link rel="mask-icon" href="{% static 'images/favicons/safari-pinned-tab.svg' %}" color="#00444a"> #}
+    {# <link rel="shortcut icon" href="{% static 'images/favicons/favicon.ico' %}"> #}
+    {# <meta name="msapplication-TileColor" content="#2b5797"> #}
+    {# <meta name="msapplication-config" content="{% static 'images/favicons/browserconfig.xml' %}"> #}
+    {# <meta name="theme-color" content="#ffffff"> #}
+
     <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
 
+
     {% block css %}
-    {% compress css %}
     <link rel="stylesheet" href="https://use.typekit.net/rtr6oge.css">
+    {% compress css %}
     <link rel="stylesheet" type="text/x-scss" href="{% static 'sass/app.scss' %}">
     <link href="{% static 'css/project.css' %}" rel="stylesheet">
     {% endcompress %}
@@ -27,6 +38,15 @@
   </head>
 
   <body>
+    <header class="sticky-shrinknav-header">
+      <h1 class="sticky-shrinknav-header-title">sticky-shrinknav</h1>
+      <ul class="menu align-center sticky-shrinknav-menu">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Gallery</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </header>
 
     <div class="title-bar" data-responsive-toggle="menu" data-hide-for="medium">
       <button class="menu-icon" type="button" data-toggle></button>

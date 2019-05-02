@@ -15,7 +15,7 @@ framework.
 """
 import os
 import sys
-
+from wsgiunproxy import unproxy
 from django.core.wsgi import get_wsgi_application
 
 # This allows easy placement of apps within the interior
@@ -38,3 +38,4 @@ application = get_wsgi_application()
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
+application = unproxy(trusted_proxies=settings.TRUSTED_X_FORWARDED_FOR_IPS)(application)

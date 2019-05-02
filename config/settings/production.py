@@ -127,6 +127,7 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [  # noqa F405
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = env(
     'DJANGO_DEFAULT_FROM_EMAIL',
     default='Jazmin Leon LLC <noreply@jazminleon.com>'
@@ -170,7 +171,28 @@ COMPRESS_URL = STATIC_URL # noqa F405# Collectfast
 INSTALLED_APPS = ['collectfast'] + INSTALLED_APPS  # noqa F405
 AWS_PRELOAD_METADATA = True
 
-
+# Filer
+# ------------------------------------------------------------------------------
+# TODO
+'''FILER_SERVERS = {
+    'private': {
+        'main': {
+            'ENGINE': 'filer.server.backends.nginx.NginxXAccelRedirectServer',
+            'OPTIONS': {
+                'location': '/path/to/smedia/filer',
+                'nginx_location': '/nginx_filer_private',
+            },
+        },
+        'thumbnails': {
+            'ENGINE': 'filer.server.backends.nginx.NginxXAccelRedirectServer',
+            'OPTIONS': {
+                'location': '/path/to/smedia/filer_thumbnails',
+                'nginx_location': '/nginx_filer_private_thumbnails',
+            },
+        },
+    },
+}
+'''
 # LOGGING
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
@@ -219,6 +241,10 @@ LOGGING = {
     }
 }
 
+# Fluent CMS
+# ------------------------------------------------------------------------------
+FLUENT_CONTENTS_CACHE_PLACEHOLDER_OUTPUT = True
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+from crispy_forms_foundation.settings import *

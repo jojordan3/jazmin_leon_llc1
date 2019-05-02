@@ -1,6 +1,19 @@
 from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model
+from django.contrib import admin
+#from myapp.models import Author
+#from guardian.admin import GuardedModelAdmin
+
+# Old way:
+#class AuthorAdmin(admin.ModelAdmin):
+#    pass
+
+# With object permissions support
+#class AuthorAdmin(GuardedModelAdmin):
+#    pass
+
+#admin.site.register(Author, AuthorAdmin)
 
 from jazmin_leon_llc.users.forms import UserChangeForm, UserCreationForm
 

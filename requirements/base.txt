@@ -4,7 +4,7 @@ Pillow  # https://github.com/python-pillow/Pillow
 rcssmin  # https://github.com/ndparker/rcssmin
 argon2-cffi  # https://github.com/hynek/argon2_cffi
 redis # https://github.com/antirez/redis
-python-decouple
+wagtail
 
 # Django
 # ------------------------------------------------------------------------------
